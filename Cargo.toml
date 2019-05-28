@@ -8,7 +8,7 @@ edition = "2018"
 serial = "*"
 
 [lib]
-name = "chemsim"
+name = "lib901p"
 path = "src/lib.rs"
 
 [[bin]]
