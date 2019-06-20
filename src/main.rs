@@ -22,79 +22,6 @@ impl Address {
     }
 }
 
-// pub mod fake {
-//
-//     pub enum SerialEvent {
-//
-//     }
-//
-//     pub struct FakePort {
-//         buffer: Vec<SerialEvent>,
-//     }
-//
-//     impl FakePort {
-//         pub fn new() -> Self {
-//             unimplemented!()
-//         }
-//
-//         pub fn extract(self) -> Vec<SerialEvent> {
-//             self.buffer
-//         }
-//     }
-//
-//     impl std::io::Read for FakePort {
-//         fn read(&mut self, buffer: &mut [u8]) -> std::io::Result<usize> {
-//             unimplemented!()
-//         }
-//     }
-//
-//     impl std::io::Write for FakePort {
-//         fn write(&mut self, buffer: &[u8]) -> std::io::Result<usize> {
-//             unimplemented!()
-//         }
-//
-//         fn flush(&mut self) -> std::io::Result<()> {
-//             unimplemented!()
-//         }
-//     }
-//
-//     impl serial::core::SerialPort for FakePort {
-//         fn timeout(&self) -> std::time::Duration {
-//             unimplemented!()
-//         }
-//         fn set_timeout(&mut self, timeout: std::time::Duration) -> serial::Result<()> {
-//             unimplemented!()
-//         }
-//         fn configure(&mut self, settings: &serial::PortSettings) -> serial::Result<()> {
-//             unimplemented!()
-//         }
-//         fn reconfigure(
-//             &mut self,
-//             setup: &dyn Fn(&mut dyn serial::SerialPortSettings) -> serial::Result<()>
-//         ) -> serial::Result<()> {
-//             unimplemented!()
-//         }
-//         fn set_rts(&mut self, level: bool) -> serial::Result<()> {
-//             unimplemented!()
-//         }
-//         fn set_dtr(&mut self, level: bool) -> serial::Result<()> {
-//             unimplemented!()
-//         }
-//         fn read_cts(&mut self) -> serial::Result<bool> {
-//             unimplemented!()
-//         }
-//         fn read_dsr(&mut self) -> serial::Result<bool> {
-//             unimplemented!()
-//         }
-//         fn read_ri(&mut self) -> serial::Result<bool> {
-//             unimplemented!()
-//         }
-//         fn read_cd(&mut self) -> serial::Result<bool> {
-//             unimplemented!()
-//         }
-//     }
-// }
-
 pub struct Device {
     addr: Address,
     port: Box<dyn serial::core::SerialPort>,
@@ -185,18 +112,6 @@ impl Device {
         Ok(Device { addr: addr, port: Box::new(port) })
     }
 
-    // pub fn with_fake(
-    //     addr:         Address,
-    //     mut callback: impl FnMut(&mut Device)
-    // ) -> Vec<fake::SerialEvent> {
-    //     let port = fake::FakePort::new();
-    //     {
-    //         let mut dev = Device { addr: addr, port: Box::new(port) };
-    //         callback(&mut dev);
-    //     }
-    //     port.extract()
-    // }
-
     pub fn send(&mut self, message: &str) -> Result<String> {
         write!(
             self.port,
@@ -230,7 +145,7 @@ fn main() -> std::io::Result<()> {
     )?;
     let mut i: i32 = 0;
     loop {
-        println!("DEBUG {:04}: {}", i, dev.send("PR3?").unwrap());
+        println!("DEBUG {:04}: {}", i, dev.query("PR3").unwrap());
         i = i + 1;
         std::thread::sleep(std::time::Duration::from_millis(100));
     }
